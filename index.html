@@ -21,6 +21,39 @@
   <!-- Custom styles for this template -->
   <link href="css/grayscale.min.css" rel="stylesheet">
 
+  <style>
+    #main_video {
+      width: 100%;
+      max-height: 400px;
+    }
+
+    .flex-container{
+      position: relative;
+
+      /* Other styling stuff */
+      width: 100%;
+      max-height: 400px;
+    }
+
+    .inner-element{
+      display: none;
+
+      position: absolute;
+      left: 50%;
+      top: 50%;
+
+      transform: translate(-50%,-50%);
+      /* or 3d alternative if you will add animations (smoother transitions) */
+      transform: translate3d(-50%,-50%,0);
+
+      /* Other styling stuff */
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.20);
+      color: black;
+      font-weight: bold;
+    }
+  </style>
+
 </head>
 
 <body id="page-top">
@@ -54,11 +87,14 @@
     <div class="container d-flex h-100 align-items-center">
       <div class="mx-auto text-center">
 <!--        <h1 class="mx-auto my-0 text-uppercase">Grayscale</h1>-->
-        <h2 class="text-white-50 mx-auto mt-2 mb-5">Aguarde o fim do vídeo para mais informações</h2>
-        <video id="main_video" style="width: 100%; max-height: 400px;" controls onended="videoEnded()">
-          <source src="media/sample.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
+        <h2 class="text-white-50 mx-auto mt-2 mb-5">Informações do vídeo durante o playback</h2>
+        <div class="flex-container">
+          <video id="main_video" controls>
+            <source src="media/sample.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <span id='video_text' class='inner-element'></span>
+        </div>
       </div>
     </div>
   </header>
@@ -262,9 +298,28 @@
   <script src="js/grayscale.min.js"></script>
 
   <script>
-    function videoEnded() {
-      $('#exampleModal').modal('show');
-    }
+
+    $("#main_video").on('pause', (event) => {
+      let text = "";
+      let currentTime = event.currentTarget.currentTime;
+      if(currentTime < 5)
+        text = "Informações antes de 5 segundos";
+      else if (currentTime >= 5 && currentTime < 10)
+        text = "Informações depois de 5 segundos, antes de 10 segundos";
+      else if (currentTime >= 10 && currentTime < 20)
+        text = "Informações depois de 10 segundos, antes de 20 segundos";
+      else if (currentTime >= 20 && currentTime < 30)
+        text = "Informações depois de 10 segundos, antes de 20 segundos";
+
+      $('#video_text').html(text).fadeIn();
+    }).on('ended', () => {
+      let text = "Fim do vídeo <br><br> Duração: 30 segundos <br> Dados: Mock data";
+      $('#video_text').html(text).fadeIn();
+    }).on('playing', () => {
+      let text = "";
+      $('#video_text').html(text).fadeOut();
+    });
+
   </script>
 
 </body>
