@@ -1,0 +1,44 @@
+// From Nikola Lukic answer
+window['ann'] = [{'at':100,'msg':'cool'},{'at':230,'msg':'coolianno'}];
+
+var currentFrame = $('#currentFrame');
+var video = VideoFrame({
+    id : 'video',
+    frameRate: 29.97,
+    callback : function(frame) {
+    ann.forEach(function(ele){
+    if (frame == ele['at']) {
+      currentFrame.html(ele['msg']);
+    }   
+    });   
+    }
+});
+
+$('#play-pause').click(function(){
+    ChangeButtonText();
+});
+
+function ChangeButtonText(){
+  if(video.video.paused){
+        video.video.play();
+        video.listen('frame');
+        $("#play-pause").html('Pause');
+    }else{
+        video.video.pause();
+        video.stopListen();
+        $("#play-pause").html('Play');
+    }
+  }
+<script src="https://rawgit.com/allensarkisyan/VideoFrame/master/VideoFrame.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+  <div class="frame">  
+  <h3 style="color:white;position:absolute;left:50%;top10%;" id="currentFrame">Annotation board</h3>
+  </div>
+
+<video height="180" width="100%" id="video"> 
+  <source src="http://www.w3schools.com/html/mov_bbb.mp4"></source>
+</video>
+
+ 
+  <button style="color:red;position:absolute;left:3%;top10%;" id="play-pause">Play</button>
